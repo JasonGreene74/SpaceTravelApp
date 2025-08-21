@@ -47,7 +47,7 @@ const starshipList = [
   { id: "66", name: "arc-170" },
   { id: "68", name: "Banking clan frigte" },
   { id: "74", name: "Belbullab-22 starfighter" },
-  { id: "75", name: "V-wing" }
+  
 ];
 
 const backgroundStyle = {
@@ -101,8 +101,18 @@ const SpacecraftsPage = () => {
       >
         ← Back to Dashboard
       </button>
-      <h1>View Spacecraft Details:</h1>
+      <h1>View Spacecrafts:</h1>
       <ul className="starship-list">
+        {/* Build Your Own Craft button as the first list item */}
+        <li>
+          <button
+            className="starship-btn build-craft-btn"
+            onClick={() => navigate('/spacecrafts/new')}
+            style={{ fontWeight: 'bold', fontSize: '1.1rem' }}
+          >
+            Build Your Own Craft
+          </button>
+        </li>
         {starshipList.map(ship => (
           <li key={ship.id}>
             <button
@@ -114,15 +124,6 @@ const SpacecraftsPage = () => {
           </li>
         ))}
       </ul>
-      <div style={{ textAlign: 'center', marginTop: '32px' }}>
-        <button
-          className="starship-btn build-craft-btn"
-          onClick={() => navigate('/spacecrafts/new')}
-          style={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-        >
-          Build Your Own Craft
-        </button>
-      </div>
       <p style={{ textAlign: 'center', marginTop: '24px' }}>
         Visit the API endpoint:
         <a href="https://swapi.info/api/starships" target="_blank" rel="noopener noreferrer">
