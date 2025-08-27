@@ -59,38 +59,16 @@ const backgroundStyle = {
   paddingTop: '32px'
 };
 
-const SpacecraftsPage = () => {
-  const [spacecrafts, setSpacecrafts] = useState(starshipList);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedSpacecraft, setSelectedSpacecraft] = useState(null);
-  const [detailLoading, setDetailLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts }) => {
+  const [decommissioned, setDecommissioned] = useState([]);
+  const [decommissionMode, setDecommissionMode] = useState(false);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  if (loading) return <Loading />;
-  if (error) return <div>Error loading spacecrafts: {error}</div>;
-
-  if (selectedSpacecraft) {
-    return (
-      <div>
-        <button className="back-btn" onClick={() => setSelectedSpacecraft(null)}>
-          ← Back to spacecraft list
-        </button>
-        {detailLoading ? (
-          <div>Loading...</div>
-        ) : (
-          <div>
-            <h1>{selectedSpacecraft.name}</h1>
-            {/* Add more spacecraft details here if needed */}
-          </div>
-        )}
-      </div>
-    );
-  }
+  // decommission a craft
+  const handleDecommission = (id) => {
+    setDecommissionedCrafts(prev => [...prev, id]);
+    setDecommissionMode(false);
+  };
 
   return (
     <div style={backgroundStyle}>
@@ -102,6 +80,23 @@ const SpacecraftsPage = () => {
         ← Back to Dashboard
       </button>
       <h1>View Spacecrafts:</h1>
+      <button
+        style={{
+          background: '#d32f2f',
+          color: '#f5f0f0ff',
+          border: 'none',
+          borderRadius: 6,
+          padding: '10px 20px',
+          fontWeight: 'bold',
+          fontSize: '1.1rem',
+          cursor: 'pointer',
+          marginBottom: 24,
+          marginTop: 8
+        }}
+        onClick={() => setDecommissionMode(!decommissionMode)}
+      >
+        {decommissionMode ? 'Cancel Decommission' : 'Decommission A Craft'}
+      </button>
       <ul className="starship-list">
         {/* Build Your Own Craft button as the first list item */}
         <li>
@@ -117,7 +112,33 @@ const SpacecraftsPage = () => {
           <li key={ship.id}>
             <button
               className="starship-btn"
-              onClick={() => navigate(`/spacecraft/${ship.id}`)}
+              style={{
+                background: decommissionedCrafts.includes(ship.id)
+                  ? '#d32f2f'
+                  : decommissionMode
+                  ? '#7e6f3eff'
+                  : undefined,
+                color: decommissionedCrafts.includes(ship.id) ? '#fff' : undefined,
+                cursor: decommissionedCrafts.includes(ship.id)
+                  ? 'not-allowed'
+                  : decommissionMode
+                  ? 'pointer'
+                  : 'pointer',
+                pointerEvents: decommissionedCrafts.includes(ship.id)
+                  ? 'none'
+                  : 'auto',
+                marginRight: 8,
+                border: decommissionMode && !decommissionedCrafts.includes(ship.id)
+                  ? '2px solid #d32f2f'
+                  : undefined,
+                opacity: decommissionedCrafts.includes(ship.id) ? 0.7 : 1
+              }}
+              disabled={decommissionedCrafts.includes(ship.id)}
+              onClick={() =>
+                decommissionMode
+                  ? handleDecommission(ship.id)
+                  : navigate(`/spacecraft/${ship.id}`)
+              }
             >
               {ship.id}. {ship.name}
             </button>

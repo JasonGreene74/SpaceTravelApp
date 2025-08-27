@@ -1,9 +1,10 @@
 /**
  
  * Allows users to design and submit a custom spacecraft
- *  Shows a summary of the created craft
+ * Shows a summary of the created craft
  * "Back to Spacecraft List" and "Back to Dashboard" buttons for navigation
- *  Uses a background image from Nasa.gov
+ * "Send craft on a mission" button directs user to the mission request form
+ * Uses a background image from Nasa.gov
  */
 
 import React, { useState } from 'react';
@@ -58,6 +59,11 @@ const CreateYourOwn = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setCreated(true);
+  };
+
+  // send craft to mission control with craft name
+  const handleSendToMission = () => {
+    navigate('/mission-control', { state: { craftName: name } });
   };
 
   return (
@@ -164,7 +170,23 @@ const CreateYourOwn = () => {
               <b>Entry/Departure:</b> {entry}<br />
               <b>Orbit/Landing:</b> {orbit}
             </p>
-            <p> Allow ample time for assembly and testing of your craft before any missions.  Contact CraftLabs at 10.030.969.13 for further updates</p>
+            <button
+              style={{
+                marginTop: 16,
+                background: '#ffe066',
+                border: '2px solid #1976d2',
+                color: '#222',
+                borderRadius: 8,
+                padding: '10px 20px',
+                fontWeight: 'bold',
+                fontSize: '1rem',
+                cursor: 'pointer'
+              }}
+              onClick={handleSendToMission}
+              disabled={!name}
+            >
+              Send "{name}" on a Mission
+            </button>
           </div>
         )}
         <div style={{ height: '40px' }} />

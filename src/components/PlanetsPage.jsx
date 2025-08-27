@@ -43,7 +43,7 @@ const backgroundStyle = {
   paddingTop: '32px'
 };
 
-const PlanetsPage = () => {
+const PlanetsPage = ({ planetCraftAssignments }) => {
   const navigate = useNavigate();
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -57,7 +57,7 @@ const PlanetsPage = () => {
         return res.json();
       })
       .then(data => {
-        setSelectedPlanet(data);
+        setSelectedPlanet({ ...data, id: String(id) });
         setDetailLoading(false);
       })
       .catch(err => {
@@ -69,6 +69,8 @@ const PlanetsPage = () => {
   if (error) return <div>Error loading planet: {error}</div>;
 
   if (selectedPlanet) {
+    // Use the id to look up assigned crafts
+    const assignedCraft = planetCraftAssignments[String(selectedPlanet.id)] || [];
     return (
       <div style={backgroundStyle}>
         <button className="back-btn" onClick={() => setSelectedPlanet(null)}>
@@ -94,6 +96,18 @@ const PlanetsPage = () => {
             <p><strong>Orbital Period:</strong> {selectedPlanet.orbital_period}</p>
             <p><strong>Rotation Period:</strong> {selectedPlanet.rotation_period}</p>
             <p><strong>Surface Water:</strong> {selectedPlanet.surface_water}</p>
+            <div style={{ marginTop: 16 }}>
+              <strong>Crafts on this planet:</strong>
+              {assignedCraft.length > 0 ? (
+                <ul>
+                  {assignedCraft.map(craft => (
+                    <li key={craft}>{craft}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span> None</span>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -109,7 +123,7 @@ const PlanetsPage = () => {
       >
         ← Back to Dashboard
       </button>
-      <h1>View Planetary Details:</h1>
+      <h1>View planets:</h1>
       <ul className="starship-list">
         {planetList.map(planet => (
           <li key={planet.id}>

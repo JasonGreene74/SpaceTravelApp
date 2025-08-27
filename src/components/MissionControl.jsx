@@ -13,7 +13,7 @@
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const backgroundStyle = {
   minHeight: '100vh',
@@ -31,11 +31,13 @@ const backgroundStyle = {
   overflow: 'auto'
 };
 
-const MissionControl = ({ planets, spacecrafts }) => {
+const MissionControl = ({ planets, spacecrafts, decommissionedCrafts }) => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const customCraft = location.state?.craftName;
   const [fromPlanet, setFromPlanet] = useState('');
   const [toPlanet, setToPlanet] = useState('');
-  const [spacecraft, setSpacecraft] = useState('');
+  const [spacecraft, setSpacecraft] = useState(customCraft || '');
   const [passengers, setPassengers] = useState(1);
   const [mainContact, setMainContact] = useState('');
   const [mission, setMission] = useState(null);
@@ -108,10 +110,31 @@ const MissionControl = ({ planets, spacecrafts }) => {
           <div style={{ display: 'flex', gap: 16 }}>
             <label style={{ flex: 1 }}>
               Spacecraft:
-              <select value={spacecraft} onChange={e => setSpacecraft(e.target.value)} required style={{ width: '100%' }}>
+              <select
+                value={spacecraft}
+                onChange={e => setSpacecraft(e.target.value)}
+                required
+                style={{ width: '100%' }}
+              >
                 <option value="">Select spacecraft</option>
+                {/* Add custom craft as an option if present and not already in the list */}
+                {customCraft && !spacecrafts.some(s => s.name === customCraft) && (
+                  <option value={customCraft}>{customCraft}</option>
+                )}
                 {spacecrafts.map(s => (
-                  <option key={s.id} value={s.name}>{s.name}</option>
+                  <option
+                    key={s.id}
+                    value={s.name}
+                    disabled={decommissionedCrafts.includes(s.id)}
+                    style={
+                      decommissionedCrafts.includes(s.id)
+                        ? { color: 'red', background: '#fff0f0' }
+                        : {}
+                    }
+                  >
+                    {s.name}
+                    {decommissionedCrafts.includes(s.id) ? ' (Decommissioned)' : ''}
+                  </option>
                 ))}
               </select>
             </label>

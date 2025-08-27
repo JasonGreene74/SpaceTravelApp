@@ -1,4 +1,16 @@
-import React, { Suspense } from 'react';
+/**
+ * App.jsx
+ *
+ * The main application component for Space Travel App.
+ * - Sets up routing for all pages using react-router-dom.
+ * - Defines hardcoded lists of planets and spacecrafts (matching SWAPI IDs/names).
+ * - Randomly assigns at least one spacecraft to each planet on every app load.
+ * - Passes planet and spacecraft data as props to relevant components.
+ * - Handles unmatched routes by redirecting to the homepage.
+ * - Uses Suspense for lazy loading.
+ */
+
+import React, { Suspense, useMemo, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import SpacecraftsPage from './components/SpacecraftsPage';
@@ -36,22 +48,61 @@ const starshipList = [
 
 ];
 
+// Random assignment function
+/**
+ * Randomly assigns at least one craft to each planet.
+ * Each planet gets between 1 and all available spacecraft.
+ */
+function getRandomAssignments(planets, spacecrafts) {
+  const assignments = {};
+  planets.forEach(planet => {
+    // Always assign at least one craft
+    const count = Math.max(1, Math.floor(Math.random() * spacecrafts.length) + 1);
+    const shuffled = [...spacecrafts].sort(() => 0.5 - Math.random());
+    assignments[planet.id] = shuffled.slice(0, count).map(s => s.name);
+  });
+  return assignments;
+}
+
 function App() {
+  const [decommissionedCrafts, setDecommissionedCrafts] = useState([]);
+
+  const planetCraftAssignments = useMemo(
+    () => getRandomAssignments(planetList, starshipList),
+    []
+  );
+
   return (
     <Router>
       <div className="App">
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/spacecrafts" element={<SpacecraftsPage />} />
+            <Route
+              path="/spacecrafts"
+              element={
+                <SpacecraftsPage
+                  decommissionedCrafts={decommissionedCrafts}
+                  setDecommissionedCrafts={setDecommissionedCrafts}
+                />
+              }
+            />
             <Route path="/spacecraft/:id" element={<SpacecraftDetailPage />} />
-            <Route path="/planets" element={<PlanetsPage />} />
-            <Route path="/planet/:id" element={<PlanetsPage />} />
+            <Route path="/planets" element={
+              <PlanetsPage planetCraftAssignments={planetCraftAssignments} />
+            } />
+            <Route
+              path="/planet/:id"
+              element={<PlanetsPage planetCraftAssignments={planetCraftAssignments} />}
+            />
             <Route path="/mission-control" element={
-              <MissionControl planets={planetList} spacecrafts={starshipList} />
+              <MissionControl
+                planets={planetList}
+                spacecrafts={starshipList}
+                decommissionedCrafts={decommissionedCrafts}
+              />
             } />
             <Route path="/spacecrafts/new" element={<CreateYourOwn />} />
-            {/* Replace NotFound with redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
