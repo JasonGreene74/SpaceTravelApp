@@ -66,6 +66,7 @@ function getRandomAssignments(planets, spacecrafts) {
 
 function App() {
   const [decommissionedCrafts, setDecommissionedCrafts] = useState([]);
+  const [customCrafts, setCustomCrafts] = useState([]);
 
   const planetCraftAssignments = useMemo(
     () => getRandomAssignments(planetList, starshipList),
@@ -84,25 +85,43 @@ function App() {
                 <SpacecraftsPage
                   decommissionedCrafts={decommissionedCrafts}
                   setDecommissionedCrafts={setDecommissionedCrafts}
+                  customCrafts={customCrafts}
                 />
               }
             />
-            <Route path="/spacecraft/:id" element={<SpacecraftDetailPage />} />
+            <Route
+              path="/spacecraft/:id"
+              element={
+                <SpacecraftDetailPage customCrafts={customCrafts} />
+              }
+            />
             <Route path="/planets" element={
-              <PlanetsPage planetCraftAssignments={planetCraftAssignments} />
+              <PlanetsPage
+                planetCraftAssignments={planetCraftAssignments}
+                decommissionedCrafts={decommissionedCrafts}
+              />
             } />
             <Route
               path="/planet/:id"
-              element={<PlanetsPage planetCraftAssignments={planetCraftAssignments} />}
+              element={
+                <PlanetsPage
+                  planetCraftAssignments={planetCraftAssignments}
+                  decommissionedCrafts={decommissionedCrafts}
+                  allCrafts={[...customCrafts, ...starshipList]}
+                />
+              }
             />
             <Route path="/mission-control" element={
               <MissionControl
                 planets={planetList}
-                spacecrafts={starshipList}
+                spacecrafts={[...customCrafts, ...starshipList]} // custom crafts first
                 decommissionedCrafts={decommissionedCrafts}
               />
             } />
-            <Route path="/spacecrafts/new" element={<CreateYourOwn />} />
+            <Route
+              path="/spacecrafts/new"
+              element={<CreateYourOwn setCustomCrafts={setCustomCrafts} />}
+            />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>

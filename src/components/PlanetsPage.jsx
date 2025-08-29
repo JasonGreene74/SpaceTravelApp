@@ -43,7 +43,7 @@ const backgroundStyle = {
   paddingTop: '32px'
 };
 
-const PlanetsPage = ({ planetCraftAssignments }) => {
+const PlanetsPage = ({ planetCraftAssignments, decommissionedCrafts = [], allCrafts = [] }) => {
   const navigate = useNavigate();
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -69,7 +69,6 @@ const PlanetsPage = ({ planetCraftAssignments }) => {
   if (error) return <div>Error loading planet: {error}</div>;
 
   if (selectedPlanet) {
-    // Use the id to look up assigned crafts
     const assignedCraft = planetCraftAssignments[String(selectedPlanet.id)] || [];
     return (
       <div style={backgroundStyle}>
@@ -100,8 +99,8 @@ const PlanetsPage = ({ planetCraftAssignments }) => {
               <strong>Crafts on this planet:</strong>
               {assignedCraft.length > 0 ? (
                 <ul>
-                  {assignedCraft.map(craft => (
-                    <li key={craft}>{craft}</li>
+                  {assignedCraft.map(craftName => (
+                    <li key={craftName}>{craftName}</li>
                   ))}
                 </ul>
               ) : (

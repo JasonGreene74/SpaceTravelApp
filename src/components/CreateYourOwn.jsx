@@ -1,10 +1,13 @@
 /**
- 
- * Allows users to design and submit a custom spacecraft
- * Shows a summary of the created craft
- * "Back to Spacecraft List" and "Back to Dashboard" buttons for navigation
- * "Send craft on a mission" button directs user to the mission request form
- * Uses a background image from Nasa.gov
+ * CreateYourOwn.jsx
+ *
+ * Allows users to design and submit a custom spacecraft.
+ * - Form fields for name, cargo capacity, passenger capacity, propulsion, entry/departure, and orbit/landing.
+ * - Stores the created craft in parent state via setCustomCrafts (passed as a prop).
+ * - Shows a summary of the created craft after submission.
+ * - "Send craft on a mission" button directs user to the mission request form, passing the craft name.
+ * - "Back to Spacecraft List" and "Back to Dashboard" buttons for navigation.
+ * - Uses a NASA background image for styling.
  */
 
 import React, { useState } from 'react';
@@ -46,7 +49,7 @@ const orbitTypes = [
   'Surface Landing',
 ];
 
-const CreateYourOwn = () => {
+const CreateYourOwn = ({ setCustomCrafts }) => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [cargo, setCargo] = useState('');
@@ -58,6 +61,18 @@ const CreateYourOwn = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setCustomCrafts(prev => [
+      ...prev,
+      {
+        id: `custom-${Date.now()}`,
+        name: `Custom - ${name}`,
+        cargo,
+        passengers,
+        propulsion,
+        entry,
+        orbit
+      }
+    ]);
     setCreated(true);
   };
 

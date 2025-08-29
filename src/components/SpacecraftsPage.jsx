@@ -59,7 +59,7 @@ const backgroundStyle = {
   paddingTop: '32px'
 };
 
-const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts }) => {
+const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts, customCrafts }) => {
   const [decommissioned, setDecommissioned] = useState([]);
   const [decommissionMode, setDecommissionMode] = useState(false);
   const navigate = useNavigate();
@@ -69,6 +69,9 @@ const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts }) => {
     setDecommissionedCrafts(prev => [...prev, id]);
     setDecommissionMode(false);
   };
+
+  // Place custom crafts first, then built-in crafts
+  const allCrafts = [...(customCrafts || []), ...starshipList];
 
   return (
     <div style={backgroundStyle}>
@@ -97,6 +100,18 @@ const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts }) => {
       >
         {decommissionMode ? 'Cancel Decommission' : 'Decommission A Craft'}
       </button>
+      {decommissionMode && (
+        <div
+          style={{
+            color: '#d32f2f',
+            fontWeight: 'bold',
+            marginBottom: 12,
+            fontSize: '2.2rem' // 2x larger than normal text
+          }}
+        >
+          Select Craft for Decommission
+        </div>
+      )}
       <ul className="starship-list">
         {/* Build Your Own Craft button as the first list item */}
         <li>
@@ -108,7 +123,7 @@ const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts }) => {
             Build Your Own Craft
           </button>
         </li>
-        {starshipList.map(ship => (
+        {allCrafts.map(ship => (
           <li key={ship.id}>
             <button
               className="starship-btn"
@@ -140,7 +155,7 @@ const SpacecraftsPage = ({ decommissionedCrafts, setDecommissionedCrafts }) => {
                   : navigate(`/spacecraft/${ship.id}`)
               }
             >
-              {ship.id}. {ship.name}
+              {ship.id.startsWith('custom-') ? ship.name : `${ship.id}. ${ship.name}`}
             </button>
           </li>
         ))}

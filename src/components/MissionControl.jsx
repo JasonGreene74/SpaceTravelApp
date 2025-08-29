@@ -117,10 +117,6 @@ const MissionControl = ({ planets, spacecrafts, decommissionedCrafts }) => {
                 style={{ width: '100%' }}
               >
                 <option value="">Select spacecraft</option>
-                {/* Add custom craft as an option if present and not already in the list */}
-                {customCraft && !spacecrafts.some(s => s.name === customCraft) && (
-                  <option value={customCraft}>{customCraft}</option>
-                )}
                 {spacecrafts.map(s => (
                   <option
                     key={s.id}
