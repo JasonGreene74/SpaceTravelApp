@@ -10,7 +10,7 @@
  * - Uses Suspense for lazy loading.
  */
 
-import React, { Suspense, useMemo, useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import HomePage from './components/HomePage';
 import SpacecraftsPage from './components/SpacecraftsPage';
@@ -68,9 +68,9 @@ function App() {
   const [decommissionedCrafts, setDecommissionedCrafts] = useState([]);
   const [customCrafts, setCustomCrafts] = useState([]);
 
-  const planetCraftAssignments = useMemo(
-    () => getRandomAssignments(planetList, starshipList),
-    []
+  // Replace useMemo with useState to allow updates
+  const [planetCraftAssignments, setPlanetCraftAssignments] = useState(
+    getRandomAssignments(planetList, starshipList)
   );
 
   return (
@@ -98,6 +98,7 @@ function App() {
             <Route path="/planets" element={
               <PlanetsPage
                 planetCraftAssignments={planetCraftAssignments}
+                setPlanetCraftAssignments={setPlanetCraftAssignments} // Pass the setter function here
                 decommissionedCrafts={decommissionedCrafts}
               />
             } />
@@ -106,6 +107,7 @@ function App() {
               element={
                 <PlanetsPage
                   planetCraftAssignments={planetCraftAssignments}
+                  setPlanetCraftAssignments={setPlanetCraftAssignments} // Pass the setter function here
                   decommissionedCrafts={decommissionedCrafts}
                   allCrafts={[...customCrafts, ...starshipList]}
                 />
