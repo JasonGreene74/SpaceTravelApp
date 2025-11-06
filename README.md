@@ -1,4 +1,4 @@
-# SpaceTravelApp 🚀
+# SpaceTravelApp 
 
 SpaceTravelApp is a React-based application that allows users to explore planets, view spacecrafts, and manage interplanetary missions. The app integrates with the SWAPI API for Star Wars-themed data and includes custom features like creating your own spacecraft and managing decommissioned crafts.
 
@@ -6,17 +6,17 @@ SpaceTravelApp is a React-based application that allows users to explore planets
 
 ## Features
 
-### 🌌 **Planets**
+### **Planets**
 - View a list of planets from the Star Wars universe.
 - Click on a planet to see detailed information, including climate, terrain, population, and more.
 - Randomly assigned spacecrafts are displayed for each planet.
 
-### 🚀 **Spacecrafts**
+###  **Spacecrafts**
 - View a list of available spacecrafts.
 - Decommission spacecrafts, which disables them for missions and marks them in red.
 - Create your own custom spacecraft and see it added to the list.
 
-### 🛠️ **Create Your Own Craft**
+### **Create Your Own Craft**
 - Design a custom spacecraft by specifying:
   - Name
   - Cargo capacity
@@ -26,7 +26,7 @@ SpaceTravelApp is a React-based application that allows users to explore planets
   - Orbit/landing type
 - Newly created crafts appear at the top of the Spacecrafts page and are available for missions.
 
-### 🎯 **Mission Control**
+### **Mission Control**
 - Plan interplanetary missions by selecting:
   - Departure planet
   - Destination planet
